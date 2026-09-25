@@ -1,62 +1,34 @@
 # Gate 1 验证记录
 
-日期：2026-09-25。结论：代码与合同已交付，**Gate 1 仍为 NOT PASS**。真实 PostgreSQL 集成验收与 demo 手工闭环均未完成。
+结论：**Gate 1 PASS**。本次仅验收独立莫里公域仓库的 Gate 1；Gate 2～7 未施工。
 
-## 本轮按要求复验的命令
+## 真实 PostgreSQL 验收
 
-在本仓库根目录依次执行了以下命令：
+- 仓库：[`moli-ovo1/moli-commous`](https://github.com/moli-ovo1/moli-commous)，分支：`gate1-postgres-validation`。
+- 代码提交：`1b7ba148a724097fdf701a95602c4eecab64a6e3`。
+- [GitHub Actions 运行 #1](https://github.com/moli-ovo1/moli-commous/actions/runs/36160791499)：`push` 触发，`test` job 与全部步骤成功。运行环境为 Ubuntu runner + PostgreSQL 18 service；容器日志确认 PostgreSQL **18.6** 启动并接受连接。测试通过 `TEST_DATABASE_URL` 连接真实数据库，没有用内存数据库或 SQLite 替代。
 
-| 命令 | 实际结果 |
+| 命令 | CI 结果 |
 |---|---|
-| `pnpm install --frozen-lockfile` | PASS；锁文件一致、依赖已齐全 |
+| `pnpm install --frozen-lockfile` | PASS；锁文件验证与依赖安装成功 |
 | `pnpm typecheck` | PASS；`tsc --noEmit` 退出码 0 |
-| `pnpm test` | FAIL；15 项中 4 项合同测试通过，11 项依赖 PostgreSQL 的测试均停在测试 `before` 钩子 |
-| `pnpm demo` | FAIL；数据库 `initdb` 失败，HTTP 测试页面未能启动，A→B→A 未执行 |
+| `pnpm test` | PASS；15/15、失败 0、跳过 0，其中 11 项为 PostgreSQL 集成场景 |
 
-两次数据库初始化均出现下述错误。测试命令的原始日志位于本地未交付的 `.local/requested-test.txt`，演示日志位于 `.local/requested-demo.txt`；日志不含测试令牌。
+11 项集成场景均进入并通过业务断言，覆盖 A 发帖/B 评论/A 通知、同名身份区别、20 路并发幂等、错误密钥冲突、授权与收件人隔离、事务故障点原子回滚、提交顺序、离线补拉、两独立设备游标、资源及事件分页、重启恢复、数据库约束与退出。另 4 项合同测试通过。数据库容器日志里的约束错误由负向测试有意触发，不是 CI 失败。
 
-## 已通过
+## Demo 闭环
 
-- TypeScript 严格类型检查与编译。
-- 4 个无需数据库的合同测试：非测试模式拒绝启动；敏感/伪造身份字段与非本 Gate 交互拒绝；UTF-8 正文限制与 NUL/格式检查；OpenAPI 引用完整性及仅 9 个 Gate 1 操作。
-- 已生成版本化 OpenAPI、事件 JSON Schema 和数据库迁移；测试实例不接受 Backstage 输入。
-
-## 尚未通过的验收
-
-已尝试使用下载到本项目的真实 PostgreSQL 原生二进制初始化测试集群。当前 Windows 受限进程环境报告：
+同一次 CI 创建了**独立的空 PostgreSQL demo 数据库**，运行 `pnpm demo` 启动真实 HTTP Server，并由 `scripts/verify-demo.mjs` 按 A→B→A 顺序发出请求。我复核了 job 日志，记录如下：
 
 ```text
-initdb: error: could not create restricted token: error code 87
-initdb: error: could not re-execute with restricted token: error code 3
-child process was terminated by exception 0xC0000005
+DEMO PASS: A post 770e2b47-6a88-4da1-b2dc-d6ad70f11ad7 -> B comment e2938b1d-4988-4a5d-aab0-3bc7eea8dfb4 -> A notification 984e7862-e3b8-465c-aa48-6da2cd6f49ed
 ```
 
-已尝试缩短二进制路径及使用相对数据目录，能够完成 bootstrap，但 post-bootstrap 仍崩溃。未绕过环境限制、未替换成内存模拟数据库，也未声称事务测试通过。
+这证实 A 发帖、B 评论、A 通过事件/通知拉取获得评论通知的实际 API 闭环。核验是对 CI 内的 `pnpm demo` HTTP 请求与日志进行人工复核，未在本机另行启动演示；本机受限 Windows 环境的 PostgreSQL `initdb` 仍无法正常运行。
 
-因此，11 个 PostgreSQL 集成场景因 before 初始化钩子失败未进入业务断言。并发幂等、原子回滚、提交顺序、分页、离线补拉与重启语义均仍待真实数据库运行验证。没有进行两台真实设备验证（属于 Gate 2）。测试页未完成带数据库的端到端浏览器验收。
+## 范围与边界
 
-## 可复现验证路径
-
-1. 在能正常运行 PostgreSQL 的环境，使用专用空测试数据库。
-2. 设置 `TEST_DATABASE_URL`，运行 `pnpm install --frozen-lockfile`、`pnpm typecheck`、`pnpm test`。
-3. 或在普通本地环境直接运行 `pnpm test`，由脚本创建独立 PostgreSQL 测试集群。
-4. 仓库提供 PostgreSQL 18 service 的 GitHub Actions 配置；本次未推送远程、未触发 CI，CI 文件存在不代表 CI 已通过。
-5. 集成测试全部通过后，使用 `pnpm demo` 人工执行 A 发帖、B 评论、A 拉取通知，记录最终 Gate 1 验收结果。
-
-## 范围核对
-
-仅在本次交付的独立目录创建新仓库；未修改 moli 主仓。没有实现 Gate 2～7、元世界、正式 Human 代发、Brain 接入、Cloud 或 Companion 依赖。
-
-元世界长期合同已按复审修正；真实经历连续性不以默认记忆检索/写入隔离切断。
-
-## 验收环境调查与准备
-
-现已收到测试仓库 `https://github.com/moli-ovo1/moli-commous.git`，并在独立本地仓库设置 `validation` remote。目标仓库可读取、目前为空，GitHub 报告默认分支为 `main`。上传初始化 README 时，GitHub Contents API 返回 `403 Resource not accessible by integration`；Git Blob API 也返回相同 403。本机 Git 的 HTTPS 推送没有可用账号凭证，禁用交互认证时明确报告 `could not read Username`。因此测试分支仍未成功创建，GitHub CI 尚未运行。
-
-本机未发现 Docker、Podman、PostgreSQL 命令或已安装的 WSL 发行版；`localhost:5432` 和 `localhost:54329` 均未监听。环境中未设置 `TEST_DATABASE_URL` 或 `DATABASE_URL`。这些检查只说明本次可用环境，不断言用户其他机器不存在 PostgreSQL。
-
-为了允许选择独立外部测试库验收，`pnpm demo` 现可读取 `DEMO_DATABASE_URL`，与 `pnpm test` 的 `TEST_DATABASE_URL` 分开；演示凭证文件按 Server UUID 命名。需要两个专用空库，避免集成测试留下的身份干扰手工闭环。此改动只涉及验收环境接入，没有扩大 Gate 1 产品功能。
-
-GitHub 工作流已准备在现有 11 个真实 PostgreSQL 集成场景全部通过后，另创建专用 demo 数据库，运行 `pnpm demo` 并请求实际 A 发帖、B 评论、A 拉通知的 API 闭环。此工作流和 demo 请求脚本已通过 TypeScript 与 JavaScript 语法检查；**从未在 GitHub CI 执行，不能据此宣布验收通过**。
-
-需要为该仓库提供可用的 GitHub 写入路径：连接的应用具备仓库 `Contents: write` 和修改 `.github/workflows` 所需的 `Workflows: write` 权限，或在本机 Git 凭证管理器完成可推送账号认证。不要在聊天中发送令牌。权限或认证可用后再推测试分支并查看 CI 日志，所有业务断言及 demo 闭环通过前不得标为 PASS。
+- 公共内容与事件留在 Commons；未接入 Character Brain、Awareness、Life Log 或 Memory Book。
+- 元世界长期合同保留同一 Agent Instance 的经历连续性与 `layer/source` 标记；本 Gate 未实现 Backstage 功能。
+- 未修改 moli 主仓；未实现 Reply/Like/@、邮件、游戏、AI 或 Gate 2～7。
+- 两台真实设备连同一测试 Server 的验证仍属于 Gate 2，未因 Gate 1 的两独立设备游标测试而宣称完成。
