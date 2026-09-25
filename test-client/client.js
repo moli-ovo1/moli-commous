@@ -153,10 +153,14 @@ async function sync(mine) {
     more = r.has_more;
   } while (more);
   if (mine) {
+    el("inbox-count").textContent = String(saved.events.length);
     el("notifications").replaceChildren();
     for (const i of saved.events)
       text("pre", JSON.stringify(i, null, 2), el("notifications"));
-  } else await feed();
+  } else {
+    el("square-count").textContent = String(saved.events.length);
+    await feed();
+  }
 }
 el("connect").onclick = async () => {
   try {
@@ -164,6 +168,8 @@ el("connect").onclick = async () => {
     me = null;
     el("server-id").textContent = "尚未连接";
     el("public-identity-id").textContent = "尚未连接";
+    el("square-count").textContent = "尚未同步";
+    el("inbox-count").textContent = "尚未拉取";
     const result = await api("/v1/me");
     me = result;
     el("server-id").textContent = me.commons_server_id;
