@@ -51,8 +51,12 @@ child process was terminated by exception 0xC0000005
 
 ## 验收环境调查与准备
 
-当前独立仓库的 `git remote -v` 为空；连接的 GitHub 仓库列表为空，因此没有可直接推送测试分支并运行的仓库 CI。本机未发现 Docker、Podman、PostgreSQL 命令或已安装的 WSL 发行版；`localhost:5432` 和 `localhost:54329` 均未监听。环境中未设置 `TEST_DATABASE_URL` 或 `DATABASE_URL`。这些检查只说明本次可用环境，不断言用户其他机器不存在 PostgreSQL。
+现已收到测试仓库 `https://github.com/moli-ovo1/moli-commous.git`，并在独立本地仓库设置 `validation` remote。目标仓库可读取、目前为空，GitHub 报告默认分支为 `main`。上传初始化 README 时，GitHub Contents API 返回 `403 Resource not accessible by integration`；Git Blob API 也返回相同 403。本机 Git 的 HTTPS 推送没有可用账号凭证，禁用交互认证时明确报告 `could not read Username`。因此测试分支仍未成功创建，GitHub CI 尚未运行。
+
+本机未发现 Docker、Podman、PostgreSQL 命令或已安装的 WSL 发行版；`localhost:5432` 和 `localhost:54329` 均未监听。环境中未设置 `TEST_DATABASE_URL` 或 `DATABASE_URL`。这些检查只说明本次可用环境，不断言用户其他机器不存在 PostgreSQL。
 
 为了允许选择独立外部测试库验收，`pnpm demo` 现可读取 `DEMO_DATABASE_URL`，与 `pnpm test` 的 `TEST_DATABASE_URL` 分开；演示凭证文件按 Server UUID 命名。需要两个专用空库，避免集成测试留下的身份干扰手工闭环。此改动只涉及验收环境接入，没有扩大 Gate 1 产品功能。
 
-在实际提供可用库或可推送的测试仓库前，上述已记录的测试结果仍为准；不得标为 PASS。
+GitHub 工作流已准备在现有 11 个真实 PostgreSQL 集成场景全部通过后，另创建专用 demo 数据库，运行 `pnpm demo` 并请求实际 A 发帖、B 评论、A 拉通知的 API 闭环。此工作流和 demo 请求脚本已通过 TypeScript 与 JavaScript 语法检查；**从未在 GitHub CI 执行，不能据此宣布验收通过**。
+
+需要为该仓库提供可用的 GitHub 写入路径：连接的应用具备仓库 `Contents: write` 和修改 `.github/workflows` 所需的 `Workflows: write` 权限，或在本机 Git 凭证管理器完成可推送账号认证。不要在聊天中发送令牌。权限或认证可用后再推测试分支并查看 CI 日志，所有业务断言及 demo 闭环通过前不得标为 PASS。
