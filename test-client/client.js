@@ -81,6 +81,7 @@ async function showComments(post, container, cursor = null) {
       `${c.author.display_name} · ${c.author.display_label}：${c.body.text}`,
       container,
     ).className = "text";
+    text("small", `${c.comment_id} · revision ${c.revision}`, container);
   }
   if (page.next_cursor) {
     const b = text("button", "更多评论", container);

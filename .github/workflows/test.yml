@@ -35,6 +35,7 @@ jobs:
       - name: Run demo and verify A post, B comment, A notification
         env:
           DEMO_DATABASE_URL: postgres://commons:test_only@127.0.0.1:5432/commons_gate1_demo
+          DEMO_HOST: 0.0.0.0
         run: |
           pnpm demo > demo-ci.log 2>&1 &
           demo_pid=$!

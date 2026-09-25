@@ -41,9 +41,10 @@ try {
     await writeFile(".local/cursor-secret", secret, { mode: 0o600 });
   }
   const server = await createApp(pool, secret);
-  server.listen(4317, "127.0.0.1", () =>
+  const host = process.env.DEMO_HOST ?? "127.0.0.1";
+  server.listen(4317, host, () =>
     console.log(
-      `Gate 1 TEST demo: http://127.0.0.1:4317\nFixture tokens: ${fixturePath} (local only). Press Ctrl+C to stop.`,
+      `Commons TEST demo listening on ${host}:4317\nFixture tokens: ${fixturePath} (local only). Press Ctrl+C to stop.`,
     ),
   );
   let stopping = false;
