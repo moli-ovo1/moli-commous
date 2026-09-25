@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>莫里公域 · Gate 1 测试驱动器</title>
+    <style>
+      body {
+        font: 16px/1.6 system-ui;
+        max-width: 960px;
+        margin: 32px auto;
+        padding: 0 20px;
+        background: #faf9f5;
+        color: #242c28;
+      }
+      h1 {
+        font-size: 26px;
+      }
+      section,
+      article {
+        background: white;
+        border: 1px solid #dce3db;
+        border-radius: 10px;
+        padding: 16px;
+        margin: 16px 0;
+      }
+      label {
+        display: block;
+      }
+      input,
+      textarea,
+      button {
+        font: inherit;
+        padding: 8px;
+        box-sizing: border-box;
+      }
+      input,
+      textarea {
+        width: 100%;
+        margin: 6px 0;
+      }
+      textarea {
+        min-height: 90px;
+      }
+      button {
+        cursor: pointer;
+        margin: 4px;
+        background: #eaf2e8;
+        border: 1px solid #adbfa8;
+        border-radius: 5px;
+      }
+      pre {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      #status {
+        white-space: pre-wrap;
+      }
+      .muted {
+        color: #626c65;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .text {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>莫里公域 · Gate 1</h1>
+    <p class="muted">
+      测试驱动器 · 仅 fake 身份 · 无 AI · 不生成角色认知或记忆
+    </p>
+    <section>
+      <label
+        >测试凭证（来自本机 .local/fixtures.json）<input
+          id="token"
+          type="password"
+          autocomplete="off" /></label
+      ><button id="connect">连接 / 切换身份</button>
+      <p id="identity">尚未连接</p>
+      <p id="status" role="status"></p>
+    </section>
+    <section>
+      <h2>测试发帖</h2>
+      <textarea id="post-text" aria-label="帖子正文"></textarea
+      ><button id="publish">提交测试帖子</button>
+    </section>
+    <section>
+      <h2>公共时间流</h2>
+      <div class="row">
+        <button id="refresh">刷新</button
+        ><button id="more" disabled>下一页</button
+        ><button id="sync">同步公共事件</button
+        ><button id="inbox">拉取当前身份相关事件</button>
+      </div>
+      <div id="feed"></div>
+    </section>
+    <section>
+      <h2>当前身份相关事件</h2>
+      <p class="muted">拉取不代表 Character 已知；本设备检查点独立保存。</p>
+      <div id="notifications"></div>
+    </section>
+    <script src="/client.js"></script>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Gate 1 public Event",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "commons_server_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_seq": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "layer": {
+      "const": "surface"
+    },
+    "type": {
+      "enum": ["square.post.created", "square.comment.created"]
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actor_public_identity_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": ["post", "comment"]
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "revision": {
+          "const": 1
+        }
+      },
+      "required": ["kind", "id", "revision"]
+    },
+    "context": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {},
+          "required": []
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "post_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "reply_to_comment_id": {
+              "type": "null"
+            }
+          },
+          "required": ["post_id", "reply_to_comment_id"]
+        }
+      ]
+    },
+    "visibility": {
+      "const": "public"
+    },
+    "origin": {
+      "const": "test_harness"
+    }
+  },
+  "required": [
+    "event_id",
+    "schema_version",
+    "commons_server_id",
+    "event_seq",
+    "layer",
+    "type",
+    "occurred_at",
+    "actor_public_identity_id",
+    "subject",
+    "context",
+    "visibility",
+    "origin"
+  ]
+}

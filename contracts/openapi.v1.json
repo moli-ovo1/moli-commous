@@ -1,0 +1,1672 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Moli Commons Gate 1 TEST API",
+    "version": "1.0.0",
+    "description": "Test identities only. No AI, awareness, memory, backstage, mail, games, likes, mentions or replies. Public events do not imply Character knowledge."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:4317"
+    }
+  ],
+  "security": [
+    {
+      "fixtureBearer": []
+    }
+  ],
+  "paths": {
+    "/healthz": {
+      "get": {
+        "security": [],
+        "summary": "Process health",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "status": {
+                      "const": "ok"
+                    },
+                    "mode": {
+                      "const": "test"
+                    }
+                  },
+                  "required": ["status", "mode"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/me": {
+      "get": {
+        "summary": "Current bound fixture identity",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Me"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/posts": {
+      "get": {
+        "summary": "Stable descending public timeline",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque HMAC cursor bound to stream, resource/identity and Server UUID"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create test post atomically with event and notification",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Committed, or replay of the same logical action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostWrite"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/posts/{post_id}": {
+      "get": {
+        "summary": "Read public post",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Post"
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/posts/{post_id}/comments": {
+      "get": {
+        "summary": "Ascending top-level comments",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque HMAC cursor bound to stream, resource/identity and Server UUID"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create test comment atomically with event and notification",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Committed, or replay of the same logical action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentWrite"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/events": {
+      "get": {
+        "summary": "Public committed event stream",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque HMAC cursor bound to stream, resource/identity and Server UUID"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicEventPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/me/events": {
+      "get": {
+        "summary": "Current identity related stream; does not consume other devices events",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque HMAC cursor bound to stream, resource/identity and Server UUID"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelatedEventPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Structured error; 503 may be retried with the original idempotency key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "fixtureBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Test principal token, never a model API key"
+      }
+    },
+    "schemas": {
+      "Body": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "format": {
+            "const": "plain_text"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Nonblank text without NUL; maximum 32768 UTF-8 bytes. Render as text, not HTML."
+          }
+        },
+        "required": ["format", "text"]
+      },
+      "PostInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/Body"
+          },
+          "mentions": {
+            "type": "array",
+            "maxItems": 0
+          }
+        },
+        "required": ["body", "mentions"]
+      },
+      "CommentInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/Body"
+          },
+          "mentions": {
+            "type": "array",
+            "maxItems": 0
+          },
+          "reply_to_comment_id": {
+            "type": "null"
+          }
+        },
+        "required": ["body", "mentions", "reply_to_comment_id"]
+      },
+      "Author": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "public_identity_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "household_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "display_label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "public_identity_id",
+          "display_name",
+          "household_id",
+          "display_label"
+        ]
+      },
+      "Post": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "post_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "layer": {
+            "const": "surface"
+          },
+          "author_public_identity_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "body": {
+            "$ref": "#/components/schemas/Body"
+          },
+          "mentions": {
+            "type": "array",
+            "maxItems": 0
+          },
+          "revision": {
+            "const": 1
+          },
+          "created_seq": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "const": "published"
+          },
+          "origin": {
+            "const": "test_harness"
+          },
+          "author": {
+            "$ref": "#/components/schemas/Author"
+          }
+        },
+        "required": [
+          "post_id",
+          "layer",
+          "author_public_identity_id",
+          "body",
+          "mentions",
+          "revision",
+          "created_seq",
+          "created_at",
+          "updated_at",
+          "status",
+          "origin"
+        ]
+      },
+      "Comment": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "comment_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "post_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reply_to_comment_id": {
+            "type": "null"
+          },
+          "author_public_identity_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "body": {
+            "$ref": "#/components/schemas/Body"
+          },
+          "mentions": {
+            "type": "array",
+            "maxItems": 0
+          },
+          "revision": {
+            "const": 1
+          },
+          "created_seq": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "const": "published"
+          },
+          "origin": {
+            "const": "test_harness"
+          },
+          "author": {
+            "$ref": "#/components/schemas/Author"
+          }
+        },
+        "required": [
+          "comment_id",
+          "post_id",
+          "reply_to_comment_id",
+          "author_public_identity_id",
+          "body",
+          "mentions",
+          "revision",
+          "created_seq",
+          "created_at",
+          "updated_at",
+          "status",
+          "origin"
+        ]
+      },
+      "Identity": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "principal_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "public_identity_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "character_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "layer": {
+            "const": "surface"
+          },
+          "revision": {
+            "const": 1
+          },
+          "household_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "display_label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "principal_id",
+          "public_identity_id",
+          "display_name",
+          "character_id",
+          "layer",
+          "revision",
+          "household_id",
+          "display_label"
+        ]
+      },
+      "Me": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "mode": {
+            "const": "test"
+          },
+          "commons_server_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/Identity"
+          }
+        },
+        "required": ["mode", "commons_server_id", "identity"]
+      },
+      "Event": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "schema_version": {
+            "const": 1
+          },
+          "commons_server_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "event_seq": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "layer": {
+            "const": "surface"
+          },
+          "type": {
+            "enum": ["square.post.created", "square.comment.created"]
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actor_public_identity_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "subject": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": ["post", "comment"]
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "revision": {
+                "const": 1
+              }
+            },
+            "required": ["kind", "id", "revision"]
+          },
+          "context": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {},
+                "required": []
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "post_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "reply_to_comment_id": {
+                    "type": "null"
+                  }
+                },
+                "required": ["post_id", "reply_to_comment_id"]
+              }
+            ]
+          },
+          "visibility": {
+            "const": "public"
+          },
+          "origin": {
+            "const": "test_harness"
+          }
+        },
+        "required": [
+          "event_id",
+          "schema_version",
+          "commons_server_id",
+          "event_seq",
+          "layer",
+          "type",
+          "occurred_at",
+          "actor_public_identity_id",
+          "subject",
+          "context",
+          "visibility",
+          "origin"
+        ]
+      },
+      "Notification": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "notification_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "recipient_public_identity_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "event_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "const": "comment_on_own_post"
+            },
+            "minItems": 1,
+            "maxItems": 1
+          },
+          "resource": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "comment"
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "post_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "reply_to_comment_id": {
+                "type": "null"
+              }
+            },
+            "required": ["kind", "id", "post_id", "reply_to_comment_id"]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "notification_id",
+          "recipient_public_identity_id",
+          "event_id",
+          "reasons",
+          "resource",
+          "created_at"
+        ]
+      },
+      "PublicEventItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "event": {
+            "$ref": "#/components/schemas/Event"
+          }
+        },
+        "required": ["event"]
+      },
+      "RelatedEventItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "event": {
+            "$ref": "#/components/schemas/Event"
+          },
+          "notification": {
+            "$ref": "#/components/schemas/Notification"
+          }
+        },
+        "required": ["event", "notification"]
+      },
+      "PostWrite": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Post"
+          },
+          "event_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "event_seq": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "request_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": ["data", "event_id", "event_seq", "request_id"]
+      },
+      "PostPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Post"
+            }
+          },
+          "snapshot_seq": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "next_cursor": {
+            "type": ["string", "null"]
+          }
+        },
+        "required": ["items", "snapshot_seq", "has_more", "next_cursor"]
+      },
+      "CommentWrite": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Comment"
+          },
+          "event_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "event_seq": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "request_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": ["data", "event_id", "event_seq", "request_id"]
+      },
+      "CommentPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            }
+          },
+          "snapshot_seq": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "next_cursor": {
+            "type": ["string", "null"]
+          }
+        },
+        "required": ["items", "snapshot_seq", "has_more", "next_cursor"]
+      },
+      "PublicEventPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicEventItem"
+            }
+          },
+          "next_cursor": {
+            "type": "string"
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "high_watermark": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          }
+        },
+        "required": ["items", "next_cursor", "has_more", "high_watermark"]
+      },
+      "RelatedEventPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelatedEventItem"
+            }
+          },
+          "next_cursor": {
+            "type": "string"
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "high_watermark": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          }
+        },
+        "required": ["items", "next_cursor", "has_more", "high_watermark"]
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "request_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "retryable": {
+                "type": "boolean"
+              }
+            },
+            "required": ["code", "message", "request_id", "retryable"]
+          }
+        },
+        "required": ["error"]
+      }
+    }
+  }
+}

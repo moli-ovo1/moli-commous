@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: commons
+      POSTGRES_PASSWORD: local_test_only
+      POSTGRES_DB: commons
+    ports:
+      - "127.0.0.1:54329:5432"
+    volumes:
+      - commons_test:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U commons -d commons"]
+      interval: 2s
+      retries: 20
+volumes:
+  commons_test:
