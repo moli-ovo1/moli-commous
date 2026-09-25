@@ -47,7 +47,7 @@ pnpm test
 
 如使用外部 PostgreSQL 验收，另设置 `DEMO_DATABASE_URL` 指向**另一个空的、专用**数据库，再运行 `pnpm demo`。Demo 不读取 `TEST_DATABASE_URL`，避免测试库中已有的临时身份与演示凭证混淆。两个 URL 应由环境变量或本地未提交的 `.env` 提供，不放进 Git、验收日志或聊天消息。`pnpm demo` 使用 `.env` 时需 Node.js 支持 `--env-file-if-exists`；测试命令直接读取进程环境变量。
 
-测试覆盖完整闭环、20 次并发幂等、错误注入回滚、提交顺序、离线补拉、独立设备检查点、稳定分页、HTTP 服务重启、身份权限与数据库约束。只有真实 PostgreSQL 集成测试通过，才能认定 Gate 1 的事务验收通过。纯合同测试不能替代这些结果。
+测试覆盖完整闭环、20 次并发幂等、错误注入回滚、提交顺序、离线补拉、独立设备检查点、稳定分页、HTTP 服务重启、身份权限与数据库约束。CI 在测试通过后创建另一个 PostgreSQL 数据库，启动 `pnpm demo`，通过 `scripts/verify-demo.mjs` 核对 A 发帖、B 评论、A 拉到通知的实际 API 结果。只有真实 PostgreSQL 集成测试和演示闭环均通过，才能认定 Gate 1 验收通过。纯合同测试不能替代这些结果。
 
 ## 工程结构
 

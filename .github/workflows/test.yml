@@ -30,3 +30,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm test
+      - name: Create separate PostgreSQL demo database
+        run: node scripts/create-demo-db.mjs
+      - name: Run demo and verify A post, B comment, A notification
+        env:
+          DEMO_DATABASE_URL: postgres://commons:test_only@127.0.0.1:5432/commons_gate1_demo
+        run: |
+          pnpm demo > demo-ci.log 2>&1 &
+          demo_pid=$!
+          trap 'kill "$demo_pid" 2>/dev/null || true' EXIT
+          node scripts/verify-demo.mjs
