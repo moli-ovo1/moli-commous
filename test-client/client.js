@@ -1,10 +1,18 @@
 const el = (id) => document.getElementById(id);
+function newUuid() {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
 let token = "",
   me = null,
   next = null;
 const device =
-  localStorage.getItem("commons-installation") || crypto.randomUUID();
+  localStorage.getItem("commons-installation") || newUuid();
 localStorage.setItem("commons-installation", device);
+el("installation-id").textContent = device;
 const status = (t) => (el("status").textContent = t);
 const scope = (stream) =>
   `commons:${me.commons_server_id}:${me.identity.public_identity_id}:${device}:${stream}`;
@@ -45,7 +53,7 @@ async function submit(path, payload) {
   let pending = JSON.parse(localStorage.getItem(storage) || "null");
   if (pending && pending.payload !== encoded)
     throw new Error("上次请求结果未知，请先用原正文重试完成后再修改。");
-  pending ??= { key: crypto.randomUUID(), payload: encoded };
+  pending ??= { key: newUuid(), payload: encoded };
   localStorage.setItem(storage, JSON.stringify(pending));
   try {
     const result = await api(path, {
@@ -153,8 +161,13 @@ el("connect").onclick = async () => {
   try {
     token = el("token").value.trim();
     me = null;
+    el("server-id").textContent = "尚未连接";
+    el("public-identity-id").textContent = "尚未连接";
     const result = await api("/v1/me");
     me = result;
+    el("server-id").textContent = me.commons_server_id;
+    el("public-identity-id").textContent =
+      me.identity.public_identity_id;
     el("identity").textContent =
       `${me.identity.display_name} · ${me.identity.display_label}（测试）`;
     el("notifications").replaceChildren();

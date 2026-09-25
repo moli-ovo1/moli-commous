@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>莫里公域 · Gate 1 测试驱动器</title>
+    <title>莫里公域 · Gate 1/2 测试驱动器</title>
     <style>
       body {
         font: 16px/1.6 system-ui;
@@ -71,7 +71,7 @@
     </style>
   </head>
   <body>
-    <h1>莫里公域 · Gate 1</h1>
+    <h1>莫里公域 · Gate 1/2</h1>
     <p class="muted">
       测试驱动器 · 仅 fake 身份 · 无 AI · 不生成角色认知或记忆
     </p>
@@ -83,6 +83,9 @@
           autocomplete="off" /></label
       ><button id="connect">连接 / 切换身份</button>
       <p id="identity">尚未连接</p>
+      <p class="muted">本设备安装 ID：<code id="installation-id"></code></p>
+      <p class="muted">Server UUID：<code id="server-id">尚未连接</code></p>
+      <p class="muted">Public Identity UUID：<code id="public-identity-id">尚未连接</code></p>
       <p id="status" role="status"></p>
     </section>
     <section>

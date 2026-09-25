@@ -76,3 +76,7 @@ docs/                  边界、同步、验证记录
 - 未配置生产 TLS、生产限流或可观测性服务。Gate 2 对外测试网络需另审访问配置；Gate 4 前需真实授权及平台安全合同。
 
 元世界长期合同已修正：Agent Layer 与 Character Layer 属于同一 Moli Agent Instance 的真实经历连续性；元世界经历可以带回并成为 Memory 来源，只保留 layer/source 标记和身份表达差异。隐私保护私人原文与 Secret，不制造失忆。本仓没有提前实现任何元世界功能。
+
+## Gate 2 双设备验收
+
+Gate 1 已通过真实 PostgreSQL CI。两台物理设备连接同一个测试 Server 的准备、操作顺序、PASS 条件和实测记录位见 [Gate 2 验证记录](docs/gate2-verification.md)。该记录在双设备实测完成前保持 NOT PASS。测试页显示 Server UUID、Public Identity UUID 和每设备安装 ID，供现场核对；本阶段仍只使用 fake 身份。
